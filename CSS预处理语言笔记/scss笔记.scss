@@ -1,0 +1,310 @@
+/*
+    scss和less有着相似的地方、但是也有不同的地方，相对less，scss更加完善，对混合、嵌套、函数、继承、媒体、选择条件、循环条件等都有着涉及。
+        scss是sass的3.x版本、完善了许多，加上了{}等、不只是靠缩进来进行编写，更加的人性化。
+        
+        scss的官方中文文档api:https://www.sass.hk/guide/ （本人更加推荐试用scss，当然用less也可以）
+
+        注意：在css中使用的 @import（引入外部文件css/less）css3新特性 ... scss里面都可以使用
+        
+        安装方式：使用ruby全局安装(sudo是mac系统下的安装所加上的)
+            如果是mac 系统自带ruby
+            如果是win系统 则去菜鸟 https://www.runoob.com/ruby/ruby-installation-windows.html 或者百度查找安装方式
+                $ ruby -v 
+                查看版本号
+                然后安装 sass
+                $ sudo gem install sass
+*/
+/*
+        1 注释 (单行注释编译撑css文件的时候不保留)
+            单行注释：//
+            多行注释:/* */
+
+
+/*
+        2 变量+运算
+            2.1.变量的好处
+            把重复使用css属性值定义成变量、可以重复使用，方便后期css代码的维护.
+            2.2.变量的定义
+            定义变量的语法 @变量名:变量的值（css的属性值）
+            2.3.变量的使用
+            属性名称:$变量名
+            2.4.字符串拼接别的 路径等
+            字符串拼接 #{}包了变量 例如 #{$string}
+
+            2.5定义一个变量 全局变量 
+                $width:1000px;
+                $height:600px;
+                $border:1px solid $color;
+                $margin:0 auto;
+                $imgUrl:"../images/";
+                $color:rgba(0,0,0,.5);
+                $size:20px;
+                //定义选择器
+                $container:.container
+                ${container}{ //嵌套方式 
+                    //写css样式
+                    width:$width;
+                    margin:$margin;
+                    a{
+                        font-size:$size;
+                    }
+                }
+                //试用如下
+                body{
+                    background-image: url("#{$imgUrl}bg.png");
+                    color:$color;
+                    //局部变量 只能在这个css作用域内部试用
+                    $lineHeight:2em;
+                    line-height:$lineHeight;
+                }
+            2.6 同时变量或者直接定义的数值都可以参与运算（记得运算符的左右加上空格、防止出错）（运算只涉及 加 减 乘 除 ）
+                例如：$size + 10px 、$size - 10px 、$size / 2 、$size * 2
+
+            2.7 运算的注意点、运算的单位等要相同，百分比不能和px计算、颜色16进制格式不能和rgb等一起运算、字符串只能相加拼接等。
+                注意事项：
+                    如果是$border:1px solid $color;
+                        $border + 1px solid #111; => 这样的就运算不了 报错
+            2.8 补充:
+                运算符 + - * /
+                插值语句 #{变量名} 防止混淆
+                字符串：双引号、单引号、无引号 三种
+
+                $link-color: blue;
+                $link-color: red !default;
+                !default 让属性不在覆盖上次定义的  
+                    如果上次没有定义则使用
+                    上次定义了的话、就不使用
+                @import "scss/sass文件名" 导入 外部引入的时候 文件名字前: _index.scss 这样的是不用编译的 证明是外部引入的文件。
+                    可以导入到一个类、id、标签选择器里面
+                    也可以在全局导入
+
+*/
+/*
+            3 混合器
+                3.1 无参数的混合的定义
+                    里面也可以使用&父级选择器标识符登
+                @mixin rounded-corners {
+                    -moz-border-radius: 5px;
+                    -webkit-border-radius: 5px;
+                    border-radius: 5px;
+                }
+                notice {
+                    background-color: green;
+                    border: 2px solid #00aa00;
+                    混合的使用
+                    @include rounded-corners;
+                }
+                3.2 有参数的混合的定义  也可以默认参数值
+                @mixin link-colors($normal:blue, $hover, $visited) {
+                    color: $normal;
+                    &:hover { color: $hover; }
+                    &:visited { color: $visited; }
+                }
+                a {
+                    带参数混合的使用
+                    @include link-colors(blue, red, green);
+                    //或者
+                    @include link-colors($hover:blue, $normal:red, $visited:green);
+                }
+                3.3 无参、带参两种
+                    带参的可以设置默认值参数、也可以不传、或者少传参数
+                    而也有关键词参数、关键词参数，可以不用按照顺序传参
+
+                    参数变量 ... 告诉scss/sass 这些参数值都属于一个列表
+
+                例如：
+                @mixin box-shadow($shadows...) {
+                    -moz-box-shadow: $shadows;
+                    -webkit-box-shadow: $shadows;
+                    box-shadow: $shadows;
+                }
+                .shadows {
+                    @include box-shadow(0px 4px 5px #666, 2px 6px 10px #999);
+                }
+                    也可以这样
+                @mixin colors($text, $background, $border) {
+                    color: $text;
+                    background-color: $background;
+                    border-color: $border;
+                }
+                $values: #ff0000, #00ff00, #0000ff;
+                .primary {
+                    @include colors($values...);
+                }
+
+*/
+/*
+            4 继承
+                4.1 通过选择器继承继承样式 @extend
+                .error {
+                    border: 1px solid red;
+                    background-color: #fdd;
+                }
+                .seriousError {
+                    @extend .error;
+                    border-width: 3px;
+                }
+                继承：@extend 继承的选择器
+                    写在子选择器中、也可以写在最外面当父级
+                4.2 多层继承
+                .error {
+                    border: 1px #f00;
+                    background-color: #fdd;
+                }
+                .attention {
+                    font-size: 3em;
+                    background-color: #ff0;
+                }
+                .seriousError {
+                    @extend .error;
+                    @extend .attention;
+                    border-width: 3px;
+                }
+                4.3 连续继承
+                .error {
+                    border: 1px #f00;
+                    background-color: #fdd;
+                }
+                .seriousError {
+                    @extend .error;
+                    border-width: 3px;
+                }
+                .criticalError {
+                    @extend .seriousError;
+                    position: fixed;
+                    top: 10%;
+                    bottom: 10%;
+                    left: 10%;
+                    right: 10%;
+                }
+                4.4 继承例子：
+                    .error {
+                        border: 1px solid red;
+                        background-color: #fdd;
+                    }
+                    .seriousError {
+                        @extend .error;
+                        border-width: 3px;
+                    }
+                    编译成：
+                    .error, .seriousError {
+                        border: 1px solid red;
+                        background-color: #fdd;
+                    }
+                    .seriousError {
+                        border-width: 3px;
+                    }
+*/
+/*
+            5 @media 媒体查询
+                $width:500px;
+                .sidebar {
+                    width: $width - 200px;
+                    @media screen and (orientation: landscape) {
+                        width: $width;
+                    }
+                }
+                编译为：
+                .sidebar {
+                    width: 300px;
+                }
+                @media screen and (orientation: landscape) {
+                    .sidebar {
+                        width: $width;
+                    }
+                }
+                @media 的 queries 允许互相嵌套使用，编译时，Sass/Scss 自动添加 and
+
+                甚至使用变量也可以 变量替代媒体的 screen 那些
+                $screen:screen
+                $landscape:landscape
+                @media $screen and (orientation: $landscape) {
+                    .sidebar {
+                        width: $width;
+                    }
+                }
+*/
+/* 
+            补充：%占位符
+                #context a%extreme {
+                    color: blue;
+                    font-weight: bold;
+                    font-size: 2em;
+                }
+                .notice {
+                    @extend %extreme!optional;
+                }
+                注意：!optional 声明
+                    当继承@extend到没有的东西的时候、会报错、而使用了
+                    !optional在继承的后面、则会阻止报错
+                编译成：
+                #context a.notice {
+                    color: blue;
+                    font-weight: bold;
+                    font-size: 2em; 
+                }
+                注意：在指令中使用 @extend 时（比如在 @media 中）
+                    有一些限制：Sass 不可以将 @media 层外的 CSS规则延伸给指令层内的 CSS，这样会生成大量的无用代码。也就是说，如果在 @media （或者其他 CSS 指令）中使用@extend，必须延伸给相同指令层中的选择器。
+*/
+/*
+            6  @if选择语句 指令
+                @if 条件 {内容}
+                @else if 条件 {内容}
+                @else {内容}
+                
+                选择语句也能写在选择器、混合、循环等里面
+            例子：
+                $type: monster;
+                $color:#fff;
+                @if $type==ocean {
+                    $color: blue;
+                }
+
+                @else if $type==matador {
+                    $color: red;
+                }
+
+                @else if $type==monster {
+                    $color: green;
+                }
+
+                @else {
+                    $color: black;
+                }
+                p {
+                    color:$color;
+                }
+
+*/
+/*
+            7 @for、@each、@while循环语句 指令
+            
+            7.1 例子：
+                @for $i from 1 through 3 {
+                    .item-#{$i} {
+                        width: 2em * $i;
+                    }
+                }
+                ul{
+                    @for $i from 1 through 3 {
+                        li:nth-of-type(#{$i}) {
+                            width: 2em * $i;
+                        }
+                    }    
+                }
+            7.2 由于for循环较为麻烦 所以正常情况下多使用@each指令
+                例子：puma, sea-slug, egret, salamander（是一个列表）
+                @each $animal in puma, sea-slug, egret, salamander {
+                    .#{$animal}-icon {
+                        background-image: url('/images/#{$animal}.png');
+                    }
+                }
+            7.3  @while 指令重复输出格式直到表达式返回结果为 false。这样可以实现比 @for 更复杂的循环，只是很少会用到。
+                $i: 6;
+                @while $i > 0 {
+                    .item-#{$i} { 
+                        width: 2em * $i; 
+                    }
+                    $i: $i - 2;
+                }
+*/

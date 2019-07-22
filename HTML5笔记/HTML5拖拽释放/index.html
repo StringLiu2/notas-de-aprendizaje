@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>拖拽，释放</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            position: relative;
+        }
+
+        img {
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>可以拖动的图片</h3>
+    <img src="" alt="没照片" >
+
+    <script>
+        const image = document.querySelector("img");
+        //拖拽Drag 释放Drop 作为html5新特性,相对重要程度差不多是6成
+        //拖拽是指鼠标点击后一直不放的拖动着，一旦释放就是释放了.
+        //源对象 指我们鼠标所点击的东西，一个节点，可以是图片、文本等
+        //目标对象 指的是我们拖动源对象后移动到的那块区域
+
+        /*
+            拖拽源对象事件:
+                1.ondragstart 源对象开始被拖动
+                2.ondrag 源对象拖动过程中，鼠标是否移动都触发
+                3.ondragend 源对象被拖动结束
+
+            拖拽源对象到达目标对象上方后触发的事件:
+                1.ondragenter 目标对象被源对象拖动着进入
+                2.ondragover 目标对象被源对象拖动着悬停在上方
+                3.ondragleave 源对象拖动着离开了目标对象
+                4.ondrop 源对象拖动着在目标对象上方释放/松手
+            拖动相关事件的新属性:
+                e.dataTransfer() //数据传递对象
+                使用方式:
+                    e.dataTransfer.setData(k,v);//k-v必须是string
+                    目标对象上的事件处理中读取数据
+                    let v = e.dataTransfer.getData(k);//获取数值
+        */
+        image.ondragstart = (e) => {
+            console.log("源对象开始拖动");
+            console.log(e);
+        }
+    </script>
+</body>
+
+</html>
